@@ -1,0 +1,71 @@
+---
+# tasks file for ansible-dockerized-elk
+
+- name: "Set SELinux context properly"
+  # In the future, someone wise can set this properly. 
+  # For now, the following command doesn't work, so we'll
+  # simply put SELinux into permissive mode.
+  #
+  # The point of the example is to show that, unlike
+  # in a docker-compose file, you can set system 
+  # attributes that are independent of Docker itself.
+  # For any secure Enterprise Linux platform, setting
+  # of SELinux context will be critical.
+  # command: chcon -R system_u:object_r:admin_home_t:s0 fig-elk/
+  command: setenforce 0
+
+- name: "Build logstash container"
+  docker_image: path="/vagrant/ansible-dockerized-elk/files/logstash" name="locallogstash" state=build
+
+- name: "Build kibana container"
+  docker_image: path="/vagrant/ansible-dockerized-elk/files/kibana" name="localkibana" state=build
+  # command: docker build ../files/kibana/Dockerfile
+
+- name: "Launch elasticsearch container"
+  docker:
+    name: elasticsearch
+    image: elasticsearch:latest
+    command: elasticsearch -Des.network.host=0.0.0.0
+    ports:
+    - "9200:9200"
+    - "9300:9300"
+
+- name: "Launch logstash container"
+  docker:
+    name: logstash
+    image: locallogstash
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    state: started
+    restart_policy: always
+    volumes:
+    - /vagrant/ansible-dockerized-elk/files/logstash/config:/etc/logstash/conf.d
+    ports:
+    - "5000:5000"
+    links:
+    - elasticsearch
+
+- name: "Launch kibana container"
+  docker: 
+    name: kibana
+    image: localkibana
+    volumes:
+    - /vagrant/ansible-dockerized-elk/files/kibana/config/kibana.yml:/opt/kibana/config/kibana.yml
+    ports:
+    - "5601:5601"
+    links:
+    - elasticsearch
+
+- name: "Wait for services to start"
+  pause: minutes=1
+
+- name: "Check the status of kibana UI"
+  command: curl localhost:5601/app/kibana
+  register: curl_result
+
+- name: "Ensure that proper data is present in stdout"
+  assert: 
+    that: 
+      - "'kibana.bundle.js' in curl_result.stdout"
+
+# Check for presence of string: kibana.bundle.js
+# In: curl localhost:5601/app/kibana
