@@ -12,13 +12,11 @@ Vagrant.configure(2) do |config|
 
   config.vm.provider "libvirt" do |libvirt, override|
     libvirt.driver = "kvm"
-#    libvirt.memory = 1024
     libvirt.memory = 2048
     libvirt.cpus = 2
   end
 
   config.vm.provider "virtualbox" do |vbox, override|
-#    vbox.memory = 1024
     vbox.memory = 2048
     vbox.cpus = 2
 
@@ -28,7 +26,8 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "playbook.yml"
-    ansible.verbose = "vvv"
+#   Uncomment the line below if you want more output. Refer to Vagrant and/or Ansible docs if you want more info.
+#   ansible.verbose = "vvv"
   end
 
 end
