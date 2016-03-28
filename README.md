@@ -22,8 +22,8 @@ Simple setup:
 2: Read the following section, "Before you Run This Thing!", to add your Twitter authentication details. *If you don't do that, this will not work.*
 3. vagrant up
 4. Hang out for a few minutes until things are done.
-5: In your browser, go to localhost:9200 to see Elasticsearch up and running (should output some pretty json with name, clustername, etc.) 
-6: In your browser, you can also visit localhost:9200/twitter/_count/?pretty to see a count of how many tweets matching your keywords have come in. (Note: if nothing is showing up, either something is wrong or nobody has tweeted anything with that keyword *since you started* (this is not searching past tweets, only tweets coming directly off the public timeline *right now*.)
+5. In your browser, go to localhost:9200 to see Elasticsearch up and running (should output some pretty json with name, clustername, etc.) 
+6. In your browser, you can also visit localhost:9200/twitter/_count/?pretty to see a count of how many tweets matching your keywords have come in. (Note: if nothing is showing up, either something is wrong or nobody has tweeted anything with that keyword *since you started* (this is not searching past tweets, only tweets coming directly off the public timeline *right now*.)
 7. In your browser, go to localhost:5601 to see working Kibana UI. (Note: It will be up and running, but that's *it* (for now); scroll down a little for more on Kibana setup. 
 
 ## Twitter application authorization, or: Do This, Before you Run This Thing!
@@ -32,12 +32,13 @@ This demo magic uses Twitter, which means you will have to modify files/Logstash
 
 Super easy steps:
 (This assumes you have a twitter account. If you don't, you will have to do thisfirst, and welcome to 2016! Otherwise, proceed ahead.)
+
 1. [Create](https://apps.twitter.com/app/new) (or use an [existing](https://apps.twitter.com) an Application on Twitter. You can give it whatever name/description you'd like,  but giving it something that helps you remember what it is for can be helpful, since in the event that you someday need to figure out which of your Twitter-related authorizations is doing something, "Sample Twitter App 85" is not helpful. The website field, similarly, does not matter, as this demo will not be posting to twitter on our behalf, but it does need some sort of address. No Callback URL is needed. Click the button at the bottom and sign your life away, you're a Developer now! 
-2: Congrats! You made an application. You're currently on the Details tab; click the "Keys and Access Tokens" tab. 
-3: Make note of your *consumer_key* and *consumer_token*. 
-4: Scroll down to "Your Access Token" and click "create my access token" -- and then make note of your Access Token and Access Token Secret. 
-5: In your fork of this repository, navigate your way over to files/Logstash/config/logstash.conf. Replace the areas between the quotes with the actual details you made note of in the previous steps. And to be clear: Yes, the quotes stay. 
-6: Optional: logstash.conf specifies *ansible* and *openstack* as the search keywords for which tweets are gathered. You can change this as needed. 
+2. Congrats! You made an application. You're currently on the Details tab; click the "Keys and Access Tokens" tab. 
+3. Make note of your *consumer_key* and *consumer_token*. 
+4. Scroll down to "Your Access Token" and click "create my access token" -- and then make note of your Access Token and Access Token Secret. 
+5. In your fork of this repository, navigate your way over to files/Logstash/config/logstash.conf. Replace the areas between the quotes with the actual details you made note of in the previous steps. And to be clear: Yes, the quotes stay. 
+6. Optional: logstash.conf specifies *ansible* and *openstack* as the search keywords for which tweets are gathered. You can change this as needed. 
 
 ## Kibana Things
 "*But I thought I was going to SEEEEEEEE stuff!*" Yeah, I know. Hold your horses. 
@@ -47,11 +48,11 @@ Assuming that you really do have tweets in an index named "twitter" in Elasticse
 1. Go here in your browser -- localhost:5601
 2. A page should exist saying "configure an index pattern"
 3. In the "index name or pattern" box replace "logstash-" with "twitter" (**NO DASH**)
-4: Leave "Index contains time-based events" checked, Leave "use even times to created index names" unchecked, and use @timestamp as the time-field name. 
-5: Press the pretty green create button that should appear once your "twitter" index name was matched. 
-6: Yay! You have an index pattern. Now click on the "Discover" tab at the top of the screen. A lovely green bar chart should appear with details below showing times and info about each tweet that has been indexed.  
-7: This probably shows the last 15 or 30 minutes, depending on how long it took you to get to this point;; for a different length of time, click "Last 15 minutes" in the upper right-hand corner to change it. 
-8: Use the search box to further filter; for example, if you want to filter Ansible tweets, you can type *ansible into the search, and you should see the count of how many tweets included the word Ansible (without double-counting if Ansible was mentioned twice in the tweet, etc.)
+4. Leave "Index contains time-based events" checked, Leave "use even times to created index names" unchecked, and use @timestamp as the time-field name. 
+5. Press the pretty green create button that should appear once your "twitter" index name was matched. 
+6. Yay! You have an index pattern. Now click on the "Discover" tab at the top of the screen. A lovely green bar chart should appear with details below showing times and info about each tweet that has been indexed.  
+7. This probably shows the last 15 or 30 minutes, depending on how long it took you to get to this point;; for a different length of time, click "Last 15 minutes" in the upper right-hand corner to change it. 
+8. Use the search box to further filter; for example, if you want to filter Ansible tweets, you can type *ansible into the search, and you should see the count of how many tweets included the word Ansible (without double-counting if Ansible was mentioned twice in the tweet, etc.)
 
 
 ## Notes on Forked / Changed Things
