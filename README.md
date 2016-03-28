@@ -27,11 +27,12 @@ Simple setup:
 7. In your browser, go to localhost:5601 to see working Kibana UI. (Note: It will be up and running, but that's *it* (for now); scroll down a little for more on Kibana setup. 
 
 ## Twitter application authorization, or: Do This, Before you Run This Thing!
+
 This demo magic uses Twitter, which means you will have to modify files/Logstash/config/logstash.conf to add your Super Twitter Secret Details if you want this to work.
 
 Super easy steps:
 (This assumes you have a twitter account. If you don't, you will have to do thisfirst, and welcome to 2016! Otherwise, proceed ahead.)
-1: [Create](https://apps.twitter.com/app/new) (or use an [existing](https://apps.twitter.com) an Application on Twitter. You can give it whatever name/description you'd like,  but giving it something that helps you remember what it is for can be helpful, since in the event that you someday need to figure out which of your Twitter-related authorizations is doing something, "Sample Twitter App 85" is not helpful. The website field, similarly, does not matter, as this demo will not be posting to twitter on our behalf, but it does need some sort of address. No Callback URL is needed. Click the button at the bottom and sign your life away, you're a Developer now! 
+1. [Create](https://apps.twitter.com/app/new) (or use an [existing](https://apps.twitter.com) an Application on Twitter. You can give it whatever name/description you'd like,  but giving it something that helps you remember what it is for can be helpful, since in the event that you someday need to figure out which of your Twitter-related authorizations is doing something, "Sample Twitter App 85" is not helpful. The website field, similarly, does not matter, as this demo will not be posting to twitter on our behalf, but it does need some sort of address. No Callback URL is needed. Click the button at the bottom and sign your life away, you're a Developer now! 
 2: Congrats! You made an application. You're currently on the Details tab; click the "Keys and Access Tokens" tab. 
 3: Make note of your *consumer_key* and *consumer_token*. 
 4: Scroll down to "Your Access Token" and click "create my access token" -- and then make note of your Access Token and Access Token Secret. 
@@ -66,8 +67,6 @@ Main differences between this stack and [atomic-elk](https://github.com/ftl-tool
 * __Vagrant.__ The Vagrantfile has changed doubled both *libvirt.memory* and *vbox.memory* from 1024 to 2048. Why? Who knows! Experimention. My elasticsearch container kept halting, and after changing this, all was better. (Note: I was also at the time using 'trump' as a keyword in *logstash.conf* and that resulted in a lot, and i mean, __a lot__ of tweets coming in. Keywords associated with less contentious terms and lower tweet volume may be more appropriate. Or maybe my computer just doesn't like Donald Trump. Smart computer. Good job!) 
 * __Logstash container.__ Previously, *tasks/main.yml* simply launched the logstash container, directly pulling from [Docker Hub](https://hub.docker.com/_/logstash/). Since logstash plugins need to be installed separately, an additional task was added to *tasks/main.yml* to build a Logstash container, and the launching of that container is now specified as the local image name, rather than the previous *logstash:latest*. A Dockerfile was added in *files/Logstash*, which builds upon the previously directly used Docker image, adding one line to install the twitter plugin. 
 * __Logstash configuration.__ The logstash configuration (*files/Logstash/config/logstash.conf*) was replaced with inputs for keywords from the twitter timeline, and outputs to elasticsearch with an index name specified (twitter). As noted in the above section on Twitter authorization, this configuration file will need to have your details from twitter oauthy-app stuff inserted, since I am not a fan of publicly sharing my API authorizations. Sooooory!  
-
-
 
 # Usage
 
